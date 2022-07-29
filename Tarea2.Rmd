@@ -1,0 +1,225 @@
+DIEGO PABLO ELIAS CIFUENTES   -   999008713
+
+TAREA 2
+
+
+FUNCIONES EN R
+
+Cuando se define una función, indistintamente del lenguaje de programación que se trabaje, se hace referencia
+a un bloque de código que realiza una, o más, operaciones en concreto, con una serie de argumentos de entrada
+y entrega un resultado esperado en la salida.
+
+Una función está compuesta por:
+*Argumentos de entrada
+*Cuerpo de la función
+*Salida o resultado
+
+
+ESTRUCTURA DE UNA FUNCIÓN
+
+La sintaxis de una función en R se compone de la siguiente manera: 
+
+```{r}
+  my_función <- function(#parámetros de entrada
+    ){
+   
+     #cuerpo de la función
+
+  }
+
+#Donde:
+
+# my_función <- nombre de la función
+# parámetros de entrada <- variables a operar
+# cuerpo de la función <- instrucciónes u operaciones a realizar dentro de la función.
+```
+
+
+EJEMPLO DE UNA FUNCIÓN
+
+```{r}
+# La función "Area" encuentra el área de una figura geométrica según los datos brindados.
+# Los parámetros de entrada consisten en:
+
+# base:   hace referencia a la dimensión horizontal de la figura (en el caso del circulo, hace referencia al radio)  
+# altura: hace referencia a la dimensión vertical de la figura (en el caso de cuadrado y circulo colocar cero (0) en este argumento)
+# figura: hace referencia a las figuras contenidas en el vector forma[], se puede ingresar el nombre de la figura entre comillas, o bien el vector
+#         forma en una posición determinada ( forma["no. de figura elegida" ] )
+
+
+forma <- c("cuadrado", "rectangulo", "triangulo", "circulo")
+
+
+Area <- function(base, altura, figura){
+  
+  if(figura == forma[1]){
+    resultado <- base^2
+    print(paste("El área del cuadrado es", resultado))
+  }else if(figura == forma[2]){
+    resultado <- base*altura
+    print(paste("El área del rectangulo es", resultado))
+  }else if(figura == forma[3]){
+    resultado <- base*altura/2
+    print(paste("El área del triangulo es", resultado))
+  }else if(figura == forma[4]){
+    resultado <- base^2*3.1416
+    print(paste("El área del circulo es", resultado))
+  }else{
+    print("Revise los datos de entrada")
+  }
+}
+
+```
+Ejemplo de funcionamiento
+
+```{r}
+Area(5,0,"cuadrado")
+```
+```{r}
+Area(6,3,"triangulo")
+```
+```{r}
+Area(5,4,"triangulo")
+```
+```{r}
+Area(6,0,"circulo")
+```
+
+
+
+FAMILIA APPLY
+
+La familia de funciones de apply son un conjunto de funciones vectorizadas en R que permiten realizar tareas complejas sobre vectores de forma resumida sin funciones de bucles como for o while. 
+
+Para el caso de la funció apply
+```{r}
+#SINTAXIS
+
+apply(X,      #Se llama al vector, matrix o data frame.
+      MARGIN, #1 para operar en filas, 2 para columnas, C(1,2) filas y columnas
+      FUN,    #Operaciones o funciones a aplicar al elemento X.
+      )
+```
+
+Ejemplo de Apply
+```{r}
+my_df <- data.frame(x=1:5, y=6:10, z=11:15)
+my_df
+
+#Se desea sumar los elementos de cada fila de my_df
+
+apply(my_df, MARGIN = 1, FUN=sum)
+```
+```{r}
+
+#Se desea sumar los elementos de cada columna de my_df
+
+apply(my_df, MARGIN = 2, FUN=sum)
+```
+```{r}
+
+#Tambien se puede aplicar apply a solo cierto rango de valores del elemento X
+
+apply(my_df[,c(1,3)], MARGIN = 2, FUN= sum)
+```
+
+LAPPLY CON FUNCIONES
+
+Lapply pertenece a la familia de apply, esta funcion puede aplicarse a vectores y listas y devuelve una lista de la misma longitud que la de la entrada.
+
+```{r}
+#SINTAXIS
+
+lapply(X,   # Elemento lista o vector
+       FUN, # Función a aplicar
+       ...) # Argumentos adicionales para ser pasados a FUN
+```
+
+Ejemplo de uso de lapply
+
+```{r}
+my_list=list(A <- c(1:5), B <- my_df)
+my_list
+```
+
+```{r}
+#Si se desea aplicar una función a la lista creada
+lapply(my_list, sum)
+```
+LAPPLY CON FUNCIONES PROPIAS 
+
+```{r}
+#Se crea la función "cuadrado" que devuelve el valor elevado al cuadrado de los argumentos entregados, y se entrega como argumento la lista my_list mediante lapply
+
+my_fun <-function(x){
+  x^2
+}
+
+lapply(my_list, my_fun)
+```
+
+SAPPLY
+
+Sapply pertenece a la familia de apply y permite iterar sobre una lista o vector sin la necesidad de utilizar bucles como son for o while.
+
+```{r}
+#Sintaxis de sapply
+
+
+sapply(X,   # Elemento vector o lista
+       FUN, # Función a aplicar
+       ..., # Argumentos adicionales
+       simplify = TRUE,  # FALSE devuelve una lista. TRUE devuelve un array si es posible
+       USE.NAMES = TRUE) # Si TRUE y si X es un vector de caracteres, usa los nombres de X
+
+```
+
+```{r}
+#Si se desea aplicar una función a la lista creada
+sapply(my_list, sum)
+```
+```{r}
+#Se aplica sapply al vector de 1-9 y se optiene la raiz cuadrada de cada elemento
+vector <- c(1:9)
+sapply(vector, sqrt)
+```
+
+LAPPLY CON FUNCIONES PROPIAS 
+
+```{r}
+#Se crea la función "cuadrado" que devuelve el valor elevado al cuadrado de los argumentos entregados, y se entrega como argumento la lista my_list mediante sapply
+
+my_fun <-function(x){
+  x^2
+}
+
+sapply(my_list, my_fun)
+```
+VAPPLY
+
+Vapply es una función de la familia de apply que resulta util cuando se sabe qué tipo de dato se espera como resultado de una función ya que evita errores inesperados pues se debe indicar de forma explicita el tipo de dato que se espera obtener.
+
+
+```{r}
+
+#Se desea obtener la suma de los elementos dentro de my_list
+
+vapply(my_list, sum, numeric(1))
+
+```
+VAPPLY CON FUNCIONES PROPIAS 
+
+```{r}
+#Se crea la función "cuadrado" que devuelve el valor elevado al cuadrado de los argumentos entregados, y se entrega como argumento el vector de 1-9 mediante vapply
+
+vector <- c(1:9)
+
+my_fun <- function(x){
+  x^2
+}
+
+vapply(vector, my_fun, numeric(1))
+```
+
+
+
